@@ -3,9 +3,19 @@ import numpy as np
 import scipy.stats
 import logging
 from scipy.stats import zscore
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+def load_data(file_path):
+    logging.info("Loading the dataset....")
+    """
+    Load dataset from the provided file path.
+    """
+    data = pd.read_csv(file_path)
+    return data
 
 def remove_columns(df, columns_to_remove):
     
@@ -68,7 +78,6 @@ def handle_missing_values_zero(df, columns):
     for col in columns:
         df[col].fillna(0, inplace=True)
     return df
-
  
 # Function to drop rows with missing values in identifier columns
 def handle_missing_identifiers(df, columns):
@@ -107,7 +116,17 @@ def handle_missing_categorical(df, columns, fill_value='Unknown'):
             print(f"Missing values in categorical column '{column}' filled with '{fill_value}'")
     return df
 
-
+def detect_outliers(data, numerical_columns):
+    
+    logging.info("Detecting Outliers....")
+    """
+    Boxplots to detect outliers in numerical columns.
+    """
+    for column in numerical_columns:
+        plt.figure(figsize=(8, 6))
+        sns.boxplot(x=data[column])
+        plt.title(f'Boxplot of {column}')
+        plt.show()
 
 def fix_outlier(df, columns):
     logging.info("Replacing values higher than 95th percentile with median....")
