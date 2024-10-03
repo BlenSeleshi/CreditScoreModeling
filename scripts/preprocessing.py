@@ -1,10 +1,15 @@
 import pandas as pd
 import numpy as np
 import scipy.stats
+import logging
 from scipy.stats import zscore
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def remove_columns(df, columns_to_remove):
     
+    logging.info("Removing Unnecessary Columns....")
     # Check if all columns are in the dataframe
     columns_to_remove = [col for col in columns_to_remove if col in df.columns]
     
@@ -16,6 +21,7 @@ def remove_columns(df, columns_to_remove):
     return df
 # Function to display missing values and their percentage in the DataFrame
 def missing_values_table(df):
+    logging.info("Displaying Missing Value Percentages for Each Column....")
     mis_val = df.isnull().sum()
     
     mis_val_percent = 100 * df.isnull().sum() / len(df)
@@ -40,6 +46,7 @@ def missing_values_table(df):
     
 # Function to drop rows with missing values in identifier columns
 def handle_missing_identifiers(df, columns):
+    logging.info("Dropping rows with missing values under the stated column....")
     for column in columns:
         if column in df.columns:
             initial_rows = df.shape[0]
@@ -50,6 +57,7 @@ def handle_missing_identifiers(df, columns):
 
 # Function to fill missing values for numerical columns based on a percentage threshold
 def handle_missing_numerical(df, columns, threshold=65, fill_strategy='mean'):
+    logging.info("Filling missing values with mean....")
     for column in columns:
         if column in df.columns:
             missing_percent = df[column].isnull().sum() * 100 / len(df)
@@ -66,6 +74,7 @@ def handle_missing_numerical(df, columns, threshold=65, fill_strategy='mean'):
 
 # Function to fill missing values for categorical columns with 'Unknown'
 def handle_missing_categorical(df, columns, fill_value='Unknown'):
+    logging.info("Filling missing categorical valuesw with 'Unknown'....")
     for column in columns:
         if column in df.columns:
             df[column].fillna(fill_value, inplace=True)
@@ -75,7 +84,7 @@ def handle_missing_categorical(df, columns, fill_value='Unknown'):
 
 
 def fix_outlier(df, columns):
-    
+    logging.info("Replacing values higher than 95th percentile with median....")
     for column in columns:
         if column in df.columns:
             # Calculate 95th percentile and median
@@ -89,7 +98,7 @@ def fix_outlier(df, columns):
     return df
 
 def remove_outliers(df, columns_to_process, z_threshold=3):
-
+    logging.info("Removing outlier with z-score > 3....")
     for column in columns_to_process:
         if column in df.columns:
             z_scores = zscore(df[column])
@@ -109,21 +118,10 @@ def remove_outliers(df, columns_to_process, z_threshold=3):
 
 # Function to identify categorical columns in a DataFrame
 def get_categorical_columns(df):
+    logging.info("Fetching the Categorical Columns....")
     categorical_columns = df.select_dtypes(include=['object', 'category','bool']).columns.tolist()
     return categorical_columns
 
-# # Function to get unique values and their counts from categorical columns
-# def get_unique_values_count(df, categorical_columns):
-#     unique_values_count = {}
-    
-#     for col in categorical_columns:
-#         unique_vals = df[col].value_counts()
-#         unique_values_count[col] = unique_vals
-    
-#     return unique_values_count
-
-
-# Function to get unique values and their counts from categorical columns
 
 def get_unique_values_count(df, categorical_columns):
     result = []
