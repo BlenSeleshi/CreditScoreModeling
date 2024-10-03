@@ -7,6 +7,7 @@ from sklearn.ensemble import RandomForestClassifier
 import logging 
 
 def load_data(file_path):
+    logging.info("Loading the dataset....")
     """
     Load dataset from the provided file path.
     """
@@ -14,6 +15,7 @@ def load_data(file_path):
     return data
 
 def overview_data(data):
+    logging.info("Printing overview of the data....")
     """
     Overview of the dataset: number of rows, columns, data types.
     """
@@ -23,6 +25,8 @@ def overview_data(data):
     print("\nData Types:\n", data.dtypes)
 
 def summary_statistics(data):
+    
+    logging.info("Printing summary statistics of the data....")
     """
     Summary statistics for numerical features.
     """
@@ -30,6 +34,8 @@ def summary_statistics(data):
     return data.describe()
 
 def plot_numerical_distributions(data, numerical_columns):
+    
+    logging.info("Visualizing the distribution of numerical features....")
     """
     Visualize distribution of numerical features using histograms.
     """
@@ -42,6 +48,8 @@ def plot_numerical_distributions(data, numerical_columns):
         plt.show()
 
 def plot_categorical_distributions(data, categorical_columns):
+    
+    logging.info("Visualizing the distribution of categorical features....")
     """
     Visualize distribution of categorical features using bar plots.
     """
@@ -55,6 +63,8 @@ def plot_categorical_distributions(data, categorical_columns):
         plt.show()
 
 def correlation_analysis(data, numerical_columns):
+    
+    logging.info("Plotting the correlation of numerical features....")
     """
     Correlation matrix for numerical features to understand relationships.
     """
@@ -66,6 +76,8 @@ def correlation_analysis(data, numerical_columns):
 
 
 def detect_outliers(data, numerical_columns):
+    
+    logging.info("Detecting outliers....")
     """
     Boxplots to detect outliers in numerical columns.
     """
@@ -77,6 +89,8 @@ def detect_outliers(data, numerical_columns):
 
 # Extra EDA for answering question 1 (Proxy Variable for High-Risk Users)
 def transaction_frequency_per_user(data):
+    
+    logging.info("Calculating transaction frequence per user....")
     """
     Calculate transaction frequency per user (AccountId) and visualize.
     """
@@ -91,6 +105,8 @@ def transaction_frequency_per_user(data):
     return transaction_counts
 
 def amount_distribution_by_fraud(data):
+    
+    logging.info("Visualizing the distribution of transaction amounts based on fraud results....")
     """
     Visualize the distribution of transaction amounts based on fraud results.
     """
@@ -103,6 +119,8 @@ def amount_distribution_by_fraud(data):
     plt.show()
 
 def avg_transaction_amount_per_user(data):
+    
+    logging.info("Calculating average transaction frequence per user....")
     """
     Calculate the average transaction amount per user and visualize.
     """
@@ -118,6 +136,8 @@ def avg_transaction_amount_per_user(data):
 
 # Extra EDA 
 def fraud_correlation_analysis(data):
+    
+    logging.info("Plotting the correlation of numerical features with the fraud result....")
     """
     Correlate numerical features with the fraud result.
     """
@@ -134,6 +154,8 @@ def fraud_correlation_analysis(data):
     return fraud_corr
 
 def feature_importance_random_forest(data):
+    
+    logging.info("Estimating feature importance for predicting fraud/default....")
     """
     Use a Random Forest to estimate feature importance for predicting fraud/default.
     """
@@ -159,6 +181,7 @@ def feature_importance_random_forest(data):
     return importances
 
 def extra_eda(data):
+    
     """
     Additional EDA steps that may be useful for deeper understanding.
     Examples could include checking skewness, kurtosis, or 
