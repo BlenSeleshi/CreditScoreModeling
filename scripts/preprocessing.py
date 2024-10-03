@@ -43,7 +43,33 @@ def missing_values_table(df):
            " columns that have missing values.\n")
            
     return mis_val_table_ren_columns
-    
+
+# Handle missing values (two strategies: median or zero)
+def handle_missing_values_median(df, columns):
+    """
+    Fills missing values with the median for the specified columns.
+    :param df: DataFrame to process
+    :param columns: List of column names to fill missing values with the median
+    :return: DataFrame with missing values filled
+    """
+    logging.info("Replacing Missing Values with Median....")
+    for col in columns:
+        df[col].fillna(df[col].median(), inplace=True)
+    return df
+
+def handle_missing_values_zero(df, columns):
+    """
+    Fills missing values with zero for the specified columns.
+    :param df: DataFrame to process
+    :param columns: List of column names to fill missing values with zero
+    :return: DataFrame with missing values filled
+    """
+    logging.info("Replacing missing values with 0....")
+    for col in columns:
+        df[col].fillna(0, inplace=True)
+    return df
+
+ 
 # Function to drop rows with missing values in identifier columns
 def handle_missing_identifiers(df, columns):
     logging.info("Dropping rows with missing values under the stated column....")
