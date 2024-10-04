@@ -2,11 +2,13 @@
 
 import pandas as pd
 import numpy as np
+import logging
 
 # 1. Aggregate Features
 
 def create_aggregate_features(data):
-
+    
+    logging.info("Creating aggregated features from the data based on each account ID....")
     agg_data = data.groupby('AccountId').agg(
         total_transaction_amount=pd.NamedAgg(column='Amount', aggfunc='sum'),
         average_transaction_amount=pd.NamedAgg(column='Amount', aggfunc='mean'),
@@ -19,7 +21,8 @@ def create_aggregate_features(data):
 # 2. Date-Time Features
 
 def extract_date_time_features(data):
-
+    
+    logging.info("Extracting time features from transaction start time....")
     data['TransactionStartTime'] = pd.to_datetime(data['TransactionStartTime'])
     data['transaction_hour'] = data['TransactionStartTime'].dt.hour
     data['transaction_day'] = data['TransactionStartTime'].dt.day
@@ -31,7 +34,8 @@ def extract_date_time_features(data):
 # 3. Encoding Categorical Variables
 
 def one_hot_encode(data, columns):
-
+    
+    logging.info("Encoding Categorical Columns....")
     return pd.get_dummies(data, columns=columns, drop_first=True)
 
 def label_encode(data, columns):
@@ -49,7 +53,8 @@ def label_encode(data, columns):
 # 4. RFM Analysis
 
 def create_rfm_features(data):
-
+     
+    logging.info("Creating RFM data Featues....")
     # Convert TransactionStartTime to datetime if not already
     data['TransactionStartTime'] = pd.to_datetime(data['TransactionStartTime'])
     
@@ -74,6 +79,8 @@ def create_rfm_features(data):
 # 5. Credit-to-Debit Ratio
 
 def create_credit_debit_ratio(data):
+    
+    logging.info("Creating Credit to Debit Ratio....")
 
     credit_debit = data.groupby('AccountId').apply(lambda x: pd.Series({
         'total_credit': x[x['Amount'] < 0]['Amount'].abs().sum(),
@@ -88,6 +95,7 @@ def create_credit_debit_ratio(data):
 
 def create_max_transaction(data):
 
+    logging.info("Calculating the maximum transaction for each account....")
     max_transaction = data.groupby('AccountId')['Amount'].max().reset_index()
     max_transaction.columns = ['AccountId', 'max_transaction_amount']
     
@@ -96,13 +104,39 @@ def create_max_transaction(data):
 # 7. Number of Subscriptions and Fraud Relationship
 
 def create_subscription_features(data):
-
+    
+    logging.info("Extracting subscription related features for each account....")
     # Number of subscriptions tied to each account
     subscription_count = data.groupby('AccountId')['SubscriptionId'].nunique().reset_index()
     subscription_count.columns = ['AccountId', 'subscription_count']
     
-    # Relationship between subscription count and fraud (fraud rate by subscription count)
-    fraud_relation = data.groupby('subscription_count')['FraudResult'].mean().reset_index()
-    fraud_relation.columns = ['subscription_count', 'fraud_rate']
+    return subscription_count
+
+# 8. Calculating RFM Score
+def calculate_rfm_score(rfm):
+    """
+    Calculate RFM (Recency, Frequency, Monetary) score.
+
+    Args:
+        rfm (pd.DataFrame): DataFrame containing recency, frequency, and monetary columns.
+
+    Returns:
+        pd.DataFrame: DataFrame with RFM scores added.
+    """
+    # Ensure RFM columns are numeric
+    rfm['recency'] = pd.to_numeric(rfm['recency'], errors='coerce')
+    rfm['frequency'] = pd.to_numeric(rfm['frequency'], errors='coerce')
+    rfm['monetary'] = pd.to_numeric(rfm['monetary'], errors='coerce')
     
-    return subscription_count, fraud_relation
+    # Drop duplicates in RFM columns
+    rfm = rfm.drop_duplicates(subset=['recency', 'frequency', 'monetary'])
+
+    # Assigning RFM scores based on quantiles
+    rfm['recency_score'] = pd.qcut(rfm['recency'], 5, labels=False) + 1
+    rfm['frequency_score'] = pd.qcut(rfm['frequency'], 5, labels=False) + 1
+    rfm['monetary_score'] = pd.qcut(rfm['monetary'], 5, labels=False) + 1
+
+    # Combining scores into a single RFM score
+    rfm['RFM_Score'] = rfm['recency_score'] + rfm['frequency_score'] + rfm['monetary_score']
+
+    return rfm
