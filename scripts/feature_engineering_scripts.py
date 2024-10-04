@@ -115,16 +115,28 @@ def create_subscription_features(data):
 # 8. Calculating RFM Score
 def calculate_rfm_score(rfm):
     """
-    Calculate RFM score for each customer.
-    RFM score is calculated by assigning ranks to Recency, Frequency, and Monetary values,
-    then combining them to form a score between 1 and 5 for each metric.
+    Calculate RFM (Recency, Frequency, Monetary) score.
+
+    Args:
+        rfm (pd.DataFrame): DataFrame containing recency, frequency, and monetary columns.
+
+    Returns:
+        pd.DataFrame: DataFrame with RFM scores added.
     """
+    # Ensure RFM columns are numeric
+    rfm['recency'] = pd.to_numeric(rfm['recency'], errors='coerce')
+    rfm['frequency'] = pd.to_numeric(rfm['frequency'], errors='coerce')
+    rfm['monetary'] = pd.to_numeric(rfm['monetary'], errors='coerce')
+    
+    # Drop duplicates in RFM columns
+    rfm = rfm.drop_duplicates(subset=['recency', 'frequency', 'monetary'])
+
     # Assigning RFM scores based on quantiles
     rfm['recency_score'] = pd.qcut(rfm['recency'], 5, labels=False) + 1
     rfm['frequency_score'] = pd.qcut(rfm['frequency'], 5, labels=False) + 1
     rfm['monetary_score'] = pd.qcut(rfm['monetary'], 5, labels=False) + 1
-    
+
     # Combining scores into a single RFM score
-    rfm['rfm_score'] = rfm['recency_score'] + rfm['frequency_score'] + rfm['monetary_score']
-    
-    return rfm[['AccountId', 'recency', 'frequency', 'monetary', 'recency_score', 'frequency_score', 'monetary_score', 'rfm_score']]
+    rfm['RFM_Score'] = rfm['recency_score'] + rfm['frequency_score'] + rfm['monetary_score']
+
+    return rfm
