@@ -110,8 +110,4 @@ def create_subscription_features(data):
     subscription_count = data.groupby('AccountId')['SubscriptionId'].nunique().reset_index()
     subscription_count.columns = ['AccountId', 'subscription_count']
     
-    # Relationship between subscription count and fraud (fraud rate by subscription count)
-    fraud_relation = data.groupby('subscription_count')['FraudResult'].mean().reset_index()
-    fraud_relation.columns = ['subscription_count', 'fraud_rate']
-    
-    return subscription_count, fraud_relation
+    return subscription_count
