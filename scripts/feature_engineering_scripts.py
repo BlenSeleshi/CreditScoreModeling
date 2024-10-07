@@ -135,9 +135,9 @@ def calculate_rfm_score(rfm):
 
    
     # Assigning RFM scores based on quantiles
-    rfm['recency_score'] = pd.qcut(rfm['recency'], 5, labels=False) + 1
-    rfm['frequency_score'] = pd.qcut(rfm['frequency'], 5, labels=False) + 1
-    rfm['monetary_score'] = pd.qcut(rfm['monetary'], 5, labels=False) + 1
+    rfm['recency_score'] = pd.qcut(rfm['recency'], 5, labels=False, duplicates='drop') + 1
+    rfm['frequency_score'] = pd.qcut(rfm['frequency'], 5, labels=False, duplicates='drop') + 1
+    rfm['monetary_score'] = pd.qcut(rfm['monetary'], 5, labels=False, duplicates='drop') + 1
 
     # Combining scores into a single RFM score
     rfm['RFM_Score'] = rfm['recency_score'] + rfm['frequency_score'] + rfm['monetary_score']
