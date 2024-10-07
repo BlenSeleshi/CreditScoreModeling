@@ -127,10 +127,13 @@ def calculate_rfm_score(rfm):
     rfm['recency'] = pd.to_numeric(rfm['recency'], errors='coerce')
     rfm['frequency'] = pd.to_numeric(rfm['frequency'], errors='coerce')
     rfm['monetary'] = pd.to_numeric(rfm['monetary'], errors='coerce')
-    
+   
+    """this code ensures that each unique combination of recency, frequency, and monetary values appears
+    only once in the rfm data frame. This is often useful for data cleaning and analysis purposes.""" 
     # Drop duplicates in RFM columns
-    rfm = rfm.drop_duplicates(subset=['recency', 'frequency', 'monetary'])
+    #rfm = rfm.drop_duplicates(subset=['recency', 'frequency', 'monetary'])
 
+   
     # Assigning RFM scores based on quantiles
     rfm['recency_score'] = pd.qcut(rfm['recency'], 5, labels=False) + 1
     rfm['frequency_score'] = pd.qcut(rfm['frequency'], 5, labels=False) + 1
