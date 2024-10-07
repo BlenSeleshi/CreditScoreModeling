@@ -81,13 +81,15 @@ def create_rfm_features(data):
 def create_credit_debit_ratio(data):
     
     logging.info("Creating Credit to Debit Ratio....")
-
     credit_debit = data.groupby('AccountId').apply(lambda x: pd.Series({
         'total_credit': x[x['Amount'] < 0]['Amount'].abs().sum(),
         'total_debit': x[x['Amount'] > 0]['Amount'].sum()
     })).reset_index()
 
-    credit_debit['credit_debit_ratio'] = credit_debit['total_credit'] / (credit_debit['total_debit'] + 1e-9)  # Add a small number to avoid division by zero
+    credit_debit['credit_debit_ratio'] = credit_debit.apply(
+        lambda row: row['total_credit'] / (row['total_debit'] + 1e-9),
+        axis=1
+    )  # Add a small number to avoid division by zero
 
     return credit_debit[['AccountId', 'credit_debit_ratio']]
 
