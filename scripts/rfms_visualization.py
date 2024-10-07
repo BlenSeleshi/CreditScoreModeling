@@ -41,3 +41,30 @@ def classify_rfms(data, threshold=7):
     """
     data['user_class'] = data['RFM_Score'].apply(lambda x: 'good' if x >= threshold else 'bad')
     return data
+
+def visualize_label_counts(data):
+    """
+    Visualize the counts of 'good' and 'bad' labels.
+
+    Args:
+        data (pd.DataFrame): DataFrame containing the 'user_class' column.
+
+    Returns:
+        None
+    """
+    # Count the occurrences of each label
+    label_counts = data['user_class'].value_counts()
+
+    # Set the visual style
+    sns.set(style="whitegrid")
+
+    # Create a bar plot
+    plt.figure(figsize=(8, 5))
+    sns.barplot(x=label_counts.index, y=label_counts.values, palette='Set2')
+    
+    # Add titles and labels
+    plt.title('Counts of Good and Bad Labels')
+    plt.xlabel('User Class')
+    plt.ylabel('Count')
+    plt.xticks(rotation=0)  # Rotate x labels if needed
+    plt.show()
