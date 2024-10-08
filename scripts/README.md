@@ -156,4 +156,153 @@ agg_features = create_aggregate_features(data)
 rfm_features = create_rfm_features(data)
 ```
 
+## RFMS Visualization and Classification (`rfms_visualization.py`)
+
+This script provides functions to visualize RFMS data and classify users based on their RFMS scores.
+
+### Functions:
+
+#### 1.1. `visualize_rfms(data: pd.DataFrame)`
+
+Visualizes the relationship between Recency, Frequency, and Monetary values.
+
+- **Arguments**:
+  - `data`: A pandas DataFrame with columns for `recency`, `frequency`, `monetary`, and an optional `RFM_Score` column.
+- **Returns**: None, shows plots for Recency vs Monetary, Frequency vs Monetary, and Recency vs Frequency.
+
+#### 1.2. `classify_rfms(data: pd.DataFrame, threshold: int = 7)`
+
+Classifies users into 'good' (1) and 'bad' (0) categories based on their RFM score.
+
+- **Arguments**:
+  - `data`: A pandas DataFrame containing the `RFM_Score` column.
+  - `threshold`: A threshold for classifying good and bad users (default is 7).
+- **Returns**: DataFrame with an added `label` column (1 for good, 0 for bad).
+
+#### 1.3. `visualize_rfm_distribution(data: pd.DataFrame)`
+
+Plots the distribution of RFMS scores in a histogram.
+
+- **Arguments**:
+  - `data`: A pandas DataFrame with an `RFM_Score` column.
+- **Returns**: None, shows a plot of the RFMS score distribution.
+
+#### 1.4. `visualize_label_counts(data: pd.DataFrame)`
+
+Visualizes the counts of 'good' and 'bad' users based on the `label` column.
+
+- **Arguments**:
+  - `data`: A pandas DataFrame containing the `label` column.
+- **Returns**: None, shows a bar plot of 'good' vs 'bad' labels.
+
+### Example Usage:
+
+```python
+import pandas as pd
+from rfms_visualization import visualize_rfms, classify_rfms, visualize_rfm_distribution, visualize_label_counts
+
+# Example DataFrame
+df = pd.DataFrame({
+    'recency': [10, 20, 30],
+    'frequency': [5, 10, 15],
+    'monetary': [100, 200, 300],
+    'RFM_Score': [8, 6, 5]
+})
+
+# Visualize RFMS relationships
+visualize_rfms(df)
+
+# Classify users into good and bad based on RFM score
+df = classify_rfms(df, threshold=7)
+
+# Visualize RFMS score distribution
+visualize_rfm_distribution(df)
+
+# Visualize counts of good and bad users
+visualize_label_counts(df)
+```
+
+## 2. Weight of Evidence (WoE) and Information Value (IV) Calculation (`woe_iv_calculator.py`)
+
+This script calculates Weight of Evidence (WoE) and Information Value (IV) for binary classification models and helps with feature selection by ranking features based on IV.
+
+### Functions:
+
+#### 2.1. `woe_binning(data: pd.DataFrame, feature: str, target: str, bins: int = 5)`
+
+Bins a feature into equal-sized bins and calculates WoE for each bin.
+
+- **Arguments**:
+  - `data`: A pandas DataFrame containing the feature and target columns.
+  - `feature`: The name of the feature to bin.
+  - `target`: The binary target column (1 for positive, 0 for negative).
+  - `bins`: The number of bins to create (default is 5).
+- **Returns**: A pandas Series of WoE values and a DataFrame with bin statistics.
+
+#### 2.2. `calculate_information_value(data: pd.DataFrame, feature: str, target: str, bins: int = 5)`
+
+Calculates the Information Value (IV) for a feature.
+
+- **Arguments**:
+  - `data`: A pandas DataFrame containing the feature and target columns.
+  - `feature`: The name of the feature to calculate IV for.
+  - `target`: The binary target column.
+  - `bins`: The number of bins to create (default is 5).
+- **Returns**: A float representing the IV of the feature.
+
+#### 2.3. `apply_woe_binning_to_features(data: pd.DataFrame, features: list, target: str, bins: int = 5)`
+
+Applies WoE binning to a list of features and calculates IV for each feature.
+
+- **Arguments**:
+  - `data`: A pandas DataFrame containing the features and target.
+  - `features`: A list of feature names to apply WoE binning to.
+  - `target`: The binary target column.
+  - `bins`: The number of bins for each feature (default is 5).
+- **Returns**: A dictionary of IV values for each feature.
+
+#### 2.4. `get_top_features_by_iv(iv_values: dict, n: int = 5)`
+
+Retrieves the top N features by IV.
+
+- **Arguments**:
+  - `iv_values`: A dictionary of IV values for each feature.
+  - `n`: The number of top features to return (default is 5).
+- **Returns**: A list of the top N features sorted by IV.
+
+#### 2.5. `visualize_woe_bins(data: pd.DataFrame, features_to_bin: list, target: str, bins: int = 5)`
+
+Visualizes the WoE bins for each feature and the mean target values.
+
+- **Arguments**:
+  - `data`: A pandas DataFrame containing the features and target.
+  - `features_to_bin`: A list of features to visualize.
+  - `target`: The binary target column.
+  - `bins`: The number of bins for each feature (default is 5).
+- **Returns**: None, shows bar plots of WoE bins and mean target values.
+
+### Example Usage:
+
+```python
+import pandas as pd
+from woe_iv_calculator import apply_woe_binning_to_features, get_top_features_by_iv, visualize_woe_bins
+
+# Example DataFrame
+df = pd.DataFrame({
+    'total_transaction_amount': [10000, 20000, 30000],
+    'average_transaction_amount': [1000, 2000, 3000],
+    'transaction_count': [10, 20, 30],
+    'label': [1, 0, 1]
+})
+
+# Apply WoE binning and calculate IV for selected features
+iv_values = apply_woe_binning_to_features(df, ['total_transaction_amount', 'average_transaction_amount'], 'label')
+
+# Get top features by IV
+top_features = get_top_features_by_iv(iv_values, n=2)
+
+# Visualize WoE bins for the top features
+visualize_woe_bins(df, ['total_transaction_amount', 'average_transaction_amount'], 'label')
+```
+
 Feel free to modify any sections to better fit your project's specifics or to add additional features and functions as needed!

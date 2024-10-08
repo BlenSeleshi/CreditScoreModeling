@@ -10,6 +10,8 @@ This project includes two Jupyter notebooks focused on Exploratory Data Analysis
 .
 ├── eda_and_preprocessing.ipynb
 └── feature_engineering.ipynb
+├── rfms_woe_analysis.ipynb         # Notebook for RFMS and WoE analysis
+└── modeling.ipynb
 ```
 
 ## Prerequisites
@@ -180,6 +182,46 @@ The **Feature Engineering notebook** (`feature_engineering_notebook.ipynb`) is f
 2. **Feature Engineering**:
    - Leverage the **Feature Engineering notebook** to create new features for your model, ensuring you capture the most important aspects of user behavior and transaction patterns.
 
+---
+
+### 3. RFMS WoE Analysis
+
+- Open `rfms_woe_analysis.ipynb` to load and preprocess the data, perform RFMS analysis, calculate WoE and IV, and visualize the results.
+- The filtered dataset for modeling is saved as `filtered_data.csv` in the `data/` directory.
+
+### 4. Modeling
+
+- Open `modeling.ipynb` to load the filtered dataset and train different machine learning models (Logistic Regression, Random Forest, Gradient Boosting).
+- The models are evaluated based on various metrics, and the trained models are saved in the `models/` directory.
+
+## Analysis Details
+
+### RFMS WoE Analysis
+
+- **Data Loading**: The raw dataset is loaded and cleaned.
+- **RFMS Visualization**: Users are classified based on RFMS scores.
+- **WoE and IV Calculation**: WoE bins are created, and IV is calculated for feature selection.
+- **Visualization**: Key features are visualized to understand their importance.
+
+### Modeling
+
+- **Data Splitting**: The filtered dataset is split into training and test sets.
+- **Model Training**: Various models are trained, and hyperparameter tuning is performed for Random Forest.
+- **Model Evaluation**: The models are evaluated using metrics such as accuracy, precision, recall, F1 score, and ROC-AUC.
+- **Model Serialization**: The trained models are saved for future use.
+
+## Results
+
+The results of the model evaluations will be printed to the console, displaying the performance metrics for each model.
+
+## Future Work
+
+Future enhancements may include:
+
+- Exploring additional machine learning algorithms.
+- Hyperparameter tuning for other models.
+- Implementing cross-validation for more robust evaluation.
+
 ### How to Run
 
 - Ensure the necessary dependencies are installed.
@@ -189,9 +231,7 @@ The **Feature Engineering notebook** (`feature_engineering_notebook.ipynb`) is f
 
 ---
 
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+Feel free to customize any sections to better fit your project details or add any additional information that you think is important!
 
 ---
 
