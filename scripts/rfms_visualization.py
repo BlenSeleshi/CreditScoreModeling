@@ -3,6 +3,7 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
+import numpy as np
 
 def visualize_rfms(data):
     """
@@ -39,7 +40,7 @@ def classify_rfms(data, threshold=7):
     Returns:
         pd.DataFrame: DataFrame with an added 'user_class' column.
     """
-    data['user_class'] = data['RFM_Score'].apply(lambda x: 'good' if x >= threshold else 'bad')
+    data['label'] = np.where(data['rfms_score'] > threshold, 1, 0)
     return data
 
 def visualize_rfm_distribution(df):
