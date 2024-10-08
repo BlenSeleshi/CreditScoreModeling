@@ -65,7 +65,7 @@ def visualize_label_counts(data):
         None
     """
     # Count the occurrences of each label
-    label_counts = data['user_class'].value_counts()
+    label_counts = data['label'].value_counts()
 
     # Set the visual style
     sns.set(style="whitegrid")

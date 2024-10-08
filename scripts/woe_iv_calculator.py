@@ -28,7 +28,15 @@ def woe_binning(data, feature):
     # Handle edge cases
     woebins[-1] = np.mean([x for x in woebins[:-1] if not np.isnan(x)])
 
-    return pd.cut(data[feature], bins=bins, labels=woebins, include_lowest=True)
+    # Ensure unique labels by adding small increments
+    unique_woebins = []
+    increment = 0.000001
+    for woe in woebins:
+        while woe in unique_woebins:
+            woe += increment
+        unique_woebins.append(woe)
+
+    return pd.cut(data[feature], bins=bins, labels=unique_woebins, include_lowest=True)
 
 def visualize_woe_bins(data, features_to_bin):
     fig, axes = plt.subplots(nrows=len(features_to_bin), ncols=1, figsize=(12, 20))
@@ -59,4 +67,3 @@ def plot_feature_importance(feature_importances, top_n=10):
     plt.ylabel('Information Value')
     plt.tight_layout()
     plt.show()
-
