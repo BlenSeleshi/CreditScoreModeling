@@ -81,13 +81,15 @@ def create_rfm_features(data):
 def create_credit_debit_ratio(data):
     
     logging.info("Creating Credit to Debit Ratio....")
-
     credit_debit = data.groupby('AccountId').apply(lambda x: pd.Series({
         'total_credit': x[x['Amount'] < 0]['Amount'].abs().sum(),
         'total_debit': x[x['Amount'] > 0]['Amount'].sum()
     })).reset_index()
 
-    credit_debit['credit_debit_ratio'] = credit_debit['total_credit'] / (credit_debit['total_debit'] + 1e-9)  # Add a small number to avoid division by zero
+    credit_debit['credit_debit_ratio'] = credit_debit.apply(
+        lambda row: row['total_credit'] / (row['total_debit'] + 1e-9),
+        axis=1
+    )  # Add a small number to avoid division by zero
 
     return credit_debit[['AccountId', 'credit_debit_ratio']]
 
@@ -127,14 +129,17 @@ def calculate_rfm_score(rfm):
     rfm['recency'] = pd.to_numeric(rfm['recency'], errors='coerce')
     rfm['frequency'] = pd.to_numeric(rfm['frequency'], errors='coerce')
     rfm['monetary'] = pd.to_numeric(rfm['monetary'], errors='coerce')
-    
+   
+    """this code ensures that each unique combination of recency, frequency, and monetary values appears
+    only once in the rfm data frame. This is often useful for data cleaning and analysis purposes.""" 
     # Drop duplicates in RFM columns
-    rfm = rfm.drop_duplicates(subset=['recency', 'frequency', 'monetary'])
+    #rfm = rfm.drop_duplicates(subset=['recency', 'frequency', 'monetary'])
 
+   
     # Assigning RFM scores based on quantiles
-    rfm['recency_score'] = pd.qcut(rfm['recency'], 5, labels=False) + 1
-    rfm['frequency_score'] = pd.qcut(rfm['frequency'], 5, labels=False) + 1
-    rfm['monetary_score'] = pd.qcut(rfm['monetary'], 5, labels=False) + 1
+    rfm['recency_score'] = pd.qcut(rfm['recency'], 5, labels=False, duplicates='drop') + 1
+    rfm['frequency_score'] = pd.qcut(rfm['frequency'], 5, labels=False, duplicates='drop') + 1
+    rfm['monetary_score'] = pd.qcut(rfm['monetary'], 5, labels=False, duplicates='drop') + 1
 
     # Combining scores into a single RFM score
     rfm['RFM_Score'] = rfm['recency_score'] + rfm['frequency_score'] + rfm['monetary_score']
