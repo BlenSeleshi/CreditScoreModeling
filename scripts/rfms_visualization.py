@@ -42,6 +42,17 @@ def classify_rfms(data, threshold=7):
     data['user_class'] = data['RFM_Score'].apply(lambda x: 'good' if x >= threshold else 'bad')
     return data
 
+def visualize_rfm_distribution(df):
+    """
+    Plots histograms of RFMS scores to visualize the distribution.
+    """
+    plt.figure(figsize=(12, 6))
+    sns.histplot(df['RFM_Score'], kde=True, bins=20)
+    plt.title('RFMS Score Distribution')
+    plt.xlabel('RFM Score')
+    plt.ylabel('Frequency')
+    plt.show()
+
 def visualize_label_counts(data):
     """
     Visualize the counts of 'good' and 'bad' labels.
