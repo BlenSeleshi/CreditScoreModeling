@@ -1,11 +1,13 @@
 from flask import Flask, request, jsonify
 import joblib
 import numpy as np
+import os
 
 app = Flask(__name__)
 
 # Load the trained Random Forest model
-model = joblib.load(r'C:\Users\Blen\OneDrive\Desktop\10Academy\CreditScoreModeling\models\random_forest_model.pkl')
+model_path = os.path.join(os.path.dirname(__file__), '..', 'models', 'random_forest_model.pkl')
+model = joblib.load(model_path)
 
 @app.route('/predict', methods=['POST'])
 def predict():
