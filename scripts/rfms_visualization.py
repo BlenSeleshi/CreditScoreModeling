@@ -40,7 +40,7 @@ def classify_rfms(data, threshold=7):
     Returns:
         pd.DataFrame: DataFrame with an added 'user_class' column.
     """
-    data['label'] = np.where(data['rfms_score'] > threshold, 1, 0)
+    data['label'] = np.where(data['RFM_score'] > threshold, 1, 0)
     return data
 
 def visualize_rfm_distribution(df):
